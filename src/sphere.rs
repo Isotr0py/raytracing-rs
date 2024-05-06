@@ -23,12 +23,16 @@ impl Hittable for Sphere {
         let h = r.direction().dot(oc);
         let c = oc.length_squared() - self.radius.powi(2);
         let discriminant = h.powi(2) - a * c;
-        let t = match discriminant < 0. {
-            true => -1.,
-            false => (h - discriminant.sqrt()) / a,
-        };
-        if !r_t.contains(t) {
+        if discriminant < 0. {
             return false;
+        }
+        let sqrtd = discriminant.sqrt();
+        let mut t = (h - sqrtd) / a;
+        if !r_t.contains(t) {
+            t = (h + sqrtd) / a;
+            if !r_t.contains(t) {
+                return false;
+            }
         }
         rec.t = t;
         rec.p = r.at(t);
