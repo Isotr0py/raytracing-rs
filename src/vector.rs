@@ -18,6 +18,14 @@ impl Vec3 {
         Vec3 { e: [r, g, b] }
     }
 
+    pub fn zeros() -> Vec3 {
+        Vec3 { e: [0., 0., 0.] }
+    }
+
+    pub fn ones() -> Vec3 {
+        Vec3 { e: [1., 1., 1.] }
+    }
+
     pub fn x(self) -> f64 {
         self.e[0]
     }
