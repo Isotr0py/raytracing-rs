@@ -1,5 +1,6 @@
+use crate::hittable::{HitRecord, Hittable};
+use crate::interval::Interval;
 use crate::ray::Ray;
-use crate::hittable::{Hittable, HitRecord};
 use crate::sphere::Sphere;
 use crate::vector::Vec3;
 
@@ -9,7 +10,9 @@ pub struct HittableList {
 
 impl HittableList {
     pub fn new() -> Self {
-        Self { spheres: Vec::new() }
+        Self {
+            spheres: Vec::new(),
+        }
     }
 
     pub fn add(&mut self, sphere: Sphere) {
@@ -30,13 +33,13 @@ impl HittableList {
 }
 
 impl Hittable for HittableList {
-    fn hit(&self, r: &Ray, t_min: f64, t_max: f64, rec: &mut HitRecord) -> bool {
+    fn hit(&self, r: &Ray, r_t: Interval, rec: &mut HitRecord) -> bool {
         let mut temp_rec = HitRecord::new();
         let mut hit_anything = false;
-        let mut closest_so_far = t_max;
+        let mut closest_so_far = r_t.max();
 
         for sphere in self.spheres.iter() {
-            if sphere.hit(r, t_min, closest_so_far, &mut temp_rec) {
+            if sphere.hit(r, Interval::new(r_t.min(), closest_so_far), &mut temp_rec) {
                 hit_anything = true;
                 closest_so_far = temp_rec.t;
                 rec.p = temp_rec.p;
