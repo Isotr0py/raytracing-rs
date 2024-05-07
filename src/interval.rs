@@ -20,6 +20,16 @@ impl Interval {
         self.min
     }
 
+    pub fn clamp(&self, x: f64) -> f64 {
+        if x < self.min {
+            self.min
+        } else if x > self.max {
+            self.max
+        } else {
+            x
+        }
+    }
+
     pub fn contains(&self, x: f64) -> bool {
         self.min <= x && x <= self.max
     }
@@ -39,4 +49,7 @@ fn test_interval() {
     assert!(!i.contains(1.5));
     assert!(i.surrounds(0.5));
     assert!(!i.surrounds(1.));
+    assert!(i.clamp(0.5) == 0.5);
+    assert!(i.clamp(-1.) == 0.);
+    assert!(i.clamp(2.) == 1.);
 }

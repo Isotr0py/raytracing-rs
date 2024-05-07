@@ -10,13 +10,13 @@ mod hittable_list;
 mod interval;
 mod ray;
 mod sphere;
-mod utils;
 mod vector;
 
 fn main() {
     // Image
     let aspect_ratio: f64 = 3.0 / 2.0;
-    let image_width: usize = 300;
+    let image_width: usize = 600;
+    let samples_per_pixel: usize = 10;
 
     // World
     let mut world = HittableList::new();
@@ -24,6 +24,6 @@ fn main() {
     world.add(Sphere::new(Vec3::from_xyz(0., -100.5, -1.), 100.));
 
     // Camera
-    let cam = Camera::new(image_width, aspect_ratio);
+    let cam = Camera::new(image_width, aspect_ratio, samples_per_pixel);
     cam.render(&world);
 }
