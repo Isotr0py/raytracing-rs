@@ -17,6 +17,7 @@ fn main() {
     let aspect_ratio: f64 = 3.0 / 2.0;
     let image_width: usize = 600;
     let samples_per_pixel: usize = 10;
+    let max_depth: usize = 50;
 
     // World
     let mut world = HittableList::new();
@@ -24,6 +25,6 @@ fn main() {
     world.add(Sphere::new(Vec3::from_xyz(0., -100.5, -1.), 100.));
 
     // Camera
-    let cam = Camera::new(image_width, aspect_ratio, samples_per_pixel);
+    let cam = Camera::new(image_width, aspect_ratio, samples_per_pixel, max_depth);
     cam.render(&world);
 }

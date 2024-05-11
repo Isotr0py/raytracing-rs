@@ -2,7 +2,6 @@ use crate::hittable::{HitRecord, Hittable};
 use crate::interval::Interval;
 use crate::ray::Ray;
 use crate::sphere::Sphere;
-use crate::vector::Vec3;
 
 pub struct HittableList {
     spheres: Vec<Sphere>,
@@ -55,6 +54,8 @@ impl Hittable for HittableList {
 
 #[test]
 fn test_hittable_list() {
+    use crate::vector::Vec3;
+
     let mut world = HittableList::new();
     let sphere1 = Sphere::new(Vec3::zeros(), 1.);
     let sphere2 = Sphere::new(Vec3::ones(), 1.);

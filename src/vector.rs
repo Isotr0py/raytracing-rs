@@ -1,4 +1,5 @@
-use std::ops::{Add, AddAssign, Div, Mul, Sub};
+use std::ops::{Add, AddAssign, Div, Mul, Neg, Sub};
+use rand::prelude::*;
 
 #[derive(Debug, Clone, Copy)]
 pub struct Vec3 {
@@ -16,14 +17,6 @@ impl Vec3 {
 
     pub fn from_rgb(r: f64, g: f64, b: f64) -> Vec3 {
         Vec3 { e: [r, g, b] }
-    }
-
-    pub fn zeros() -> Vec3 {
-        Vec3 { e: [0., 0., 0.] }
-    }
-
-    pub fn ones() -> Vec3 {
-        Vec3 { e: [1., 1., 1.] }
     }
 
     pub fn x(self) -> f64 {
@@ -71,6 +64,15 @@ impl Sub for Vec3 {
     }
 }
 
+impl Neg for Vec3 {
+    type Output = Vec3;
+
+    fn neg(self) -> Vec3 {
+        Vec3::from_xyz(-self.x(), -self.y(), -self.z())
+    }
+    
+}
+
 impl Mul<f64> for Vec3 {
     type Output = Vec3;
 
@@ -108,6 +110,54 @@ impl Vec3 {
 
     pub fn length(self) -> f64 {
         self.length_squared().sqrt()
+    }
+}
+
+impl Vec3 {
+    pub fn zeros() -> Vec3 {
+        Vec3::from_xyz(0., 0., 0.)
+    }
+
+    pub fn ones() -> Vec3 {
+        Vec3::from_xyz(1., 1., 1.)
+    }
+
+    pub fn random() -> Vec3 {
+        let mut rng = rand::thread_rng();
+        let mut vec = Vec3::zeros();
+        for i in 0..3 {
+            vec.e[i] = rng.gen::<f64>();
+        }
+        vec
+    }
+
+    pub fn random_range(min:f64, max:f64) -> Vec3 {
+        let mut rng = rand::thread_rng();
+        let mut vec = Vec3::zeros();
+        for i in 0..3 {
+            vec.e[i] = rng.gen_range(min..max);
+        }
+        vec
+    }
+
+    pub fn random_in_unit_sphere() -> Vec3 {
+        // Here we use a simpler way to prevent recursive
+        let p = Vec3::random_range(-1., 1.);
+        let p = match p.length_squared() < 1. {
+            true => p,
+            false => p.unit_vector(),
+            // false => Vec3::random_in_unit_sphere(),
+        };
+        p
+    }
+
+    pub fn random_on_hemisphere(self) -> Vec3 {
+        let on_unit_sphere = Vec3::random_in_unit_sphere().unit_vector();
+        let on_unit_sphere = match on_unit_sphere.dot(self) > 0. {
+            true => on_unit_sphere,
+            false => -on_unit_sphere,
+        };
+        on_unit_sphere
     }
 }
 
