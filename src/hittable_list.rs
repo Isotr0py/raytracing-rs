@@ -45,6 +45,7 @@ impl Hittable for HittableList {
                 rec.normal = temp_rec.normal;
                 rec.t = temp_rec.t;
                 rec.set_face_normal(r, temp_rec.normal);
+                rec.mat = temp_rec.mat.clone();
             }
         }
 
@@ -55,10 +56,12 @@ impl Hittable for HittableList {
 #[test]
 fn test_hittable_list() {
     use crate::vector::Vec3;
+    use crate::material::Material;
 
     let mut world = HittableList::new();
-    let sphere1 = Sphere::new(Vec3::zeros(), 1.);
-    let sphere2 = Sphere::new(Vec3::ones(), 1.);
+    let mat = Material::lambertian(Vec3::zeros());
+    let sphere1 = Sphere::new(Vec3::zeros(), 1., mat.clone());
+    let sphere2 = Sphere::new(Vec3::ones(), 1., mat.clone());
     world.add(sphere1);
     world.add(sphere2);
 

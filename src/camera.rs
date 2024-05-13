@@ -4,6 +4,7 @@ use std::io::{self, Write};
 use crate::hittable::{HitRecord, Hittable};
 use crate::hittable_list::HittableList;
 use crate::interval::Interval;
+use crate::material::{Lambertian, Material, Metal, Scatterable};
 use crate::ray::Ray;
 use crate::vector::Vec3;
 
@@ -81,9 +82,17 @@ impl Camera {
         let color = match world.hit(r, Interval::new(1e-3, INFINITY), &mut rec) {
             true => {
                 // let direction = rec.normal.random_on_hemisphere();
-                let direction = rec.normal + rec.normal.random_on_hemisphere();
-                let ray = Ray::new(rec.p, direction);
-                0.5 * self.ray_color(&ray, depth-1, world)
+                let mut scattered = Ray::new(Vec3::zeros(), Vec3::zeros());
+                let mut attenuation = Vec3::ones();
+                let mat = rec.mat.clone();
+                if mat.scatter(&r, &mut rec, &mut attenuation, &mut scattered) {
+                    attenuation * self.ray_color(&scattered, depth-1, world)
+                } else {
+                    Vec3::zeros()
+                }
+                // let direction = rec.normal + rec.normal.random_on_hemisphere();
+                // let ray = Ray::new(rec.p, direction);
+                // 0.5 * self.ray_color(&ray, depth-1, world)
             },
             false => {
                 let unit_direction = r.direction().unit_vector();

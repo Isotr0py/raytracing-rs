@@ -1,13 +1,15 @@
-use crate::camera::Camera;
-use crate::hittable_list::HittableList;
-use crate::sphere::Sphere;
-use crate::vector::Vec3;
+use camera::Camera;
+use hittable_list::HittableList;
+use material::{Material, Lambertian};
+use sphere::Sphere;
+use vector::Vec3;
 
 mod camera;
 mod color;
 mod hittable;
 mod hittable_list;
 mod interval;
+mod material;
 mod ray;
 mod sphere;
 mod vector;
@@ -19,10 +21,18 @@ fn main() {
     let samples_per_pixel: usize = 10;
     let max_depth: usize = 50;
 
+    // Material
+    let material_ground = Material::lambertian(Vec3::from_xyz(0.8, 0.8, 0.0));
+    let material_center = Material::lambertian(Vec3::from_xyz(0.1, 0.2, 0.5));
+    let material_left = Material::metal(Vec3::from_xyz(0.8, 0.8, 0.8), 0.3);
+    let material_right = Material::metal(Vec3::from_xyz(0.8, 0.6, 0.2), 1.0);
+
     // World
     let mut world = HittableList::new();
-    world.add(Sphere::new(Vec3::from_xyz(0., 0., -1.), 0.5));
-    world.add(Sphere::new(Vec3::from_xyz(0., -100.5, -1.), 100.));
+    world.add(Sphere::new(Vec3::from_xyz(0., -100.5, -1.), 100., material_ground));
+    world.add(Sphere::new(Vec3::from_xyz(0., 0., -1.2), 0.5, material_center));
+    world.add(Sphere::new(Vec3::from_xyz(-1., 0., -1.), 0.5, material_left));
+    world.add(Sphere::new(Vec3::from_xyz(1., 0., -1.), 0.5, material_right));
 
     // Camera
     let cam = Camera::new(image_width, aspect_ratio, samples_per_pixel, max_depth);

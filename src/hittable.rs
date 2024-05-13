@@ -1,11 +1,13 @@
 use crate::interval::Interval;
+use crate::material::{Material, Lambertian};
 use crate::ray::Ray;
 use crate::vector::Vec3;
 
-#[derive(Debug, Clone, Copy)]
+#[derive(Debug, Clone)]
 pub struct HitRecord {
     pub p: Vec3,
     pub normal: Vec3,
+    pub mat: Material,
     pub t: f64,
     pub front_face: bool,
 }
@@ -15,6 +17,7 @@ impl HitRecord {
         Self {
             p: Vec3::zeros(),
             normal: Vec3::zeros(),
+            mat: Material::Lambertian(Lambertian::new(Vec3::zeros())),
             t: 0.0,
             front_face: false,
         }

@@ -73,6 +73,14 @@ impl Neg for Vec3 {
     
 }
 
+impl Mul<Vec3> for Vec3 {
+    type Output = Vec3;
+
+    fn mul(self, other: Vec3) -> Vec3 {
+        Vec3::from_xyz(other.x() * self.x(), other.y() * self.y(), other.z() * self.z())
+    }
+}
+
 impl Mul<f64> for Vec3 {
     type Output = Vec3;
 
@@ -176,6 +184,15 @@ impl Vec3 {
 
     pub fn unit_vector(self) -> Vec3 {
         self / self.length()
+    }
+
+    pub fn near_zero(self) -> bool {
+        const S: f64 = 1e-8;
+        self.x().abs() < S && self.y().abs() < S && self.z().abs() < S
+    }
+
+    pub fn reflect(self, n: Vec3) -> Vec3 {
+        self - 2. * self.dot(n) * n
     }
 }
 
