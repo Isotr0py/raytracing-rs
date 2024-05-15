@@ -20,6 +20,7 @@ fn main() {
     let image_width: usize = 600;
     let samples_per_pixel: usize = 10;
     let max_depth: usize = 50;
+    let vfov: f64 = 20.0;
 
     // Material
     let material_ground = Material::lambertian(Vec3::from_xyz(0.8, 0.8, 0.0));
@@ -37,6 +38,6 @@ fn main() {
     world.add(Sphere::new(Vec3::from_xyz(1., 0., -1.), 0.5, material_right));
 
     // Camera
-    let cam = Camera::new(image_width, aspect_ratio, 90., samples_per_pixel, max_depth);
+    let cam = Camera::new(image_width, aspect_ratio, vfov, samples_per_pixel, max_depth);
     cam.render(&world);
 }
