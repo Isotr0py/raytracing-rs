@@ -9,13 +9,17 @@ use crate::vector::Vec3;
 pub struct Sphere {
     center: Vec3,
     radius: f64,
-    mat: Material
+    mat: Material,
 }
 
 impl Sphere {
     pub fn new(center: Vec3, radius: f64, mat: Material) -> Self {
         let radius = radius.max(0.0);
-        Self { center, radius, mat }
+        Self {
+            center,
+            radius,
+            mat,
+        }
     }
 }
 

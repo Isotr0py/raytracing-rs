@@ -1,5 +1,5 @@
 use crate::interval::Interval;
-use crate::material::{Material, Lambertian};
+use crate::material::{Lambertian, Material};
 use crate::ray::Ray;
 use crate::vector::Vec3;
 

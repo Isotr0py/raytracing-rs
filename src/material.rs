@@ -1,11 +1,15 @@
-use rand::random;
-
-use crate::vector::Vec3;
-use crate::ray::Ray;
 use crate::hittable::HitRecord;
+use crate::ray::Ray;
+use crate::vector::Vec3;
 
 pub trait Scatterable {
-    fn scatter(&self, r_in: &Ray, rec: &mut HitRecord, attenuation: &mut Vec3, scattered: &mut Ray) -> bool;
+    fn scatter(
+        &self,
+        r_in: &Ray,
+        rec: &mut HitRecord,
+        attenuation: &mut Vec3,
+        scattered: &mut Ray,
+    ) -> bool;
 }
 
 #[derive(Debug, Clone)]
@@ -15,14 +19,18 @@ pub struct Lambertian {
 
 impl Lambertian {
     pub fn new(albedo: Vec3) -> Self {
-        Self {
-            albedo,
-        }
+        Self { albedo }
     }
 }
 
 impl Scatterable for Lambertian {
-    fn scatter(&self, r_in: &Ray, rec: &mut HitRecord, attenuation: &mut Vec3, scattered: &mut Ray) -> bool {
+    fn scatter(
+        &self,
+        r_in: &Ray,
+        rec: &mut HitRecord,
+        attenuation: &mut Vec3,
+        scattered: &mut Ray,
+    ) -> bool {
         let mut scatter_direction = rec.normal + Vec3::random().unit_vector();
         if scatter_direction.near_zero() {
             scatter_direction = rec.normal;
@@ -42,15 +50,18 @@ pub struct Metal {
 impl Metal {
     pub fn new(albedo: Vec3, fuzz: f64) -> Self {
         let fuzz = fuzz.min(1.).max(0.);
-        Self {
-            albedo,
-            fuzz
-        }
+        Self { albedo, fuzz }
     }
 }
 
 impl Scatterable for Metal {
-    fn scatter(&self, r_in: &Ray, rec: &mut HitRecord, attenuation: &mut Vec3, scattered: &mut Ray) -> bool {
+    fn scatter(
+        &self,
+        r_in: &Ray,
+        rec: &mut HitRecord,
+        attenuation: &mut Vec3,
+        scattered: &mut Ray,
+    ) -> bool {
         let mut reflected = r_in.direction().reflect(rec.normal);
         reflected = reflected.unit_vector() + self.fuzz * Vec3::random_in_unit_sphere();
         *scattered = Ray::new(rec.p, reflected);
@@ -66,9 +77,7 @@ pub struct Dielectric {
 
 impl Dielectric {
     pub fn new(ref_idx: f64) -> Self {
-        Self {
-            ref_idx,
-        }
+        Self { ref_idx }
     }
 
     pub fn reflectance(cosine: f64, ref_idx: f64) -> f64 {
@@ -77,17 +86,29 @@ impl Dielectric {
     }
 }
 
-impl Scatterable for Dielectric{
-    fn scatter(&self, r_in: &Ray, rec: &mut HitRecord, attenuation: &mut Vec3, scattered: &mut Ray) -> bool {
-        let ri = if rec.front_face { 1. / self.ref_idx } else { self.ref_idx };
-        
+impl Scatterable for Dielectric {
+    fn scatter(
+        &self,
+        r_in: &Ray,
+        rec: &mut HitRecord,
+        attenuation: &mut Vec3,
+        scattered: &mut Ray,
+    ) -> bool {
+        let ri = if rec.front_face {
+            1. / self.ref_idx
+        } else {
+            self.ref_idx
+        };
+
         let unit_direction = r_in.direction().unit_vector();
         let cos_theta = (-unit_direction).dot(rec.normal).min(1.);
         let sin_theta = (1. - cos_theta.powi(2)).sqrt();
 
         let cannot_refract = ri * sin_theta > 1.0;
 
-        let direction = match cannot_refract || (&Dielectric::reflectance(cos_theta, ri) > &rand::random::<f64>()){
+        let direction = match cannot_refract
+            || (&Dielectric::reflectance(cos_theta, ri) > &rand::random::<f64>())
+        {
             true => unit_direction.reflect(rec.normal),
             false => unit_direction.refract(rec.normal, ri),
         };
@@ -120,11 +141,21 @@ impl Material {
 }
 
 impl Scatterable for Material {
-    fn scatter(&self, r_in: &Ray, rec: &mut HitRecord, attenuation: &mut Vec3, scattered: &mut Ray) -> bool {
+    fn scatter(
+        &self,
+        r_in: &Ray,
+        rec: &mut HitRecord,
+        attenuation: &mut Vec3,
+        scattered: &mut Ray,
+    ) -> bool {
         match &self {
-            Material::Lambertian(lambertian) => lambertian.scatter(r_in, rec, attenuation, scattered),
+            Material::Lambertian(lambertian) => {
+                lambertian.scatter(r_in, rec, attenuation, scattered)
+            }
             Material::Metal(metal) => metal.scatter(r_in, rec, attenuation, scattered),
-            Material::Dielectric(dielectric) => dielectric.scatter(r_in, rec, attenuation, scattered),
+            Material::Dielectric(dielectric) => {
+                dielectric.scatter(r_in, rec, attenuation, scattered)
+            }
         }
     }
 }

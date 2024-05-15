@@ -1,5 +1,5 @@
-use std::ops::{Add, AddAssign, Div, Mul, Neg, Sub};
 use rand::prelude::*;
+use std::ops::{Add, AddAssign, Div, Mul, Neg, Sub};
 
 #[derive(Debug, Clone, Copy)]
 pub struct Vec3 {
@@ -70,14 +70,17 @@ impl Neg for Vec3 {
     fn neg(self) -> Vec3 {
         Vec3::from_xyz(-self.x(), -self.y(), -self.z())
     }
-    
 }
 
 impl Mul<Vec3> for Vec3 {
     type Output = Vec3;
 
     fn mul(self, other: Vec3) -> Vec3 {
-        Vec3::from_xyz(other.x() * self.x(), other.y() * self.y(), other.z() * self.z())
+        Vec3::from_xyz(
+            other.x() * self.x(),
+            other.y() * self.y(),
+            other.z() * self.z(),
+        )
     }
 }
 
@@ -111,6 +114,12 @@ impl PartialEq for Vec3 {
     }
 }
 
+impl Default for Vec3 {
+    fn default() -> Self {
+        Vec3::zeros()
+    }
+}
+
 impl Vec3 {
     pub fn length_squared(self) -> f64 {
         self.x().powi(2) + self.y().powi(2) + self.z().powi(2)
@@ -139,7 +148,7 @@ impl Vec3 {
         vec
     }
 
-    pub fn random_range(min:f64, max:f64) -> Vec3 {
+    pub fn random_range(min: f64, max: f64) -> Vec3 {
         let mut rng = rand::thread_rng();
         let mut vec = Vec3::zeros();
         for i in 0..3 {

@@ -56,8 +56,8 @@ impl Hittable for HittableList {
 
 #[test]
 fn test_hittable_list() {
-    use crate::vector::Vec3;
     use crate::material::Material;
+    use crate::vector::Vec3;
 
     let mut world = HittableList::new();
     let mat = Material::lambertian(Vec3::zeros());

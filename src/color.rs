@@ -10,7 +10,7 @@ pub fn linear_to_gamma(linear_component: f64) -> f64 {
 
 pub fn write_color(color: Vec3) {
     let intensity = Interval::new(0.000, 0.999);
-    
+
     let r = linear_to_gamma(color.x());
     let g = linear_to_gamma(color.y());
     let b = linear_to_gamma(color.z());
