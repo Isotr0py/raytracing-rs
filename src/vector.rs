@@ -167,6 +167,16 @@ impl Vec3 {
         };
         on_unit_sphere
     }
+
+    pub fn random_in_unit_disk() -> Vec3 {
+        let mut p = Vec3::random_range(-1., 1.);
+        p.e[2] = 0.;
+        let p = match p.length_squared() < 1. {
+            true => p,
+            false => p.unit_vector(),
+        };
+        p
+    }
 }
 
 impl Vec3 {

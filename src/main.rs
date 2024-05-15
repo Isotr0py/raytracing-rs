@@ -37,6 +37,6 @@ fn main() {
     world.add(Sphere::new(Vec3::from_xyz(1., 0., -1.), 0.5, material_right));
 
     // Camera
-    let cam = Camera::new(image_width, aspect_ratio, samples_per_pixel, max_depth);
+    let cam = Camera::new(image_width, aspect_ratio, 90., samples_per_pixel, max_depth);
     cam.render(&world);
 }
