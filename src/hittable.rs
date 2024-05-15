@@ -30,7 +30,7 @@ impl HitRecord {
         self.front_face = r.direction().dot(outward_normal) < 0.;
         self.normal = match self.front_face {
             true => outward_normal,
-            false => -1. * outward_normal,
+            false => -outward_normal,
         };
         // normal = front_face ? outward_normal : -outward_normal;
     }

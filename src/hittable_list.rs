@@ -41,11 +41,12 @@ impl Hittable for HittableList {
             if sphere.hit(r, Interval::new(r_t.min(), closest_so_far), &mut temp_rec) {
                 hit_anything = true;
                 closest_so_far = temp_rec.t;
-                rec.p = temp_rec.p;
-                rec.normal = temp_rec.normal;
-                rec.t = temp_rec.t;
-                rec.set_face_normal(r, temp_rec.normal);
-                rec.mat = temp_rec.mat.clone();
+                *rec = temp_rec.clone();
+                // rec.p = temp_rec.p;
+                // rec.normal = temp_rec.normal;
+                // rec.t = temp_rec.t;
+                // rec.set_face_normal(r, temp_rec.normal);
+                // rec.mat = temp_rec.mat.clone();
             }
         }
 
