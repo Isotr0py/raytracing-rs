@@ -2,6 +2,7 @@ use std::f64::INFINITY;
 use std::io::{self, Write};
 
 use derive_builder::Builder;
+use indicatif::{ProgressIterator, ProgressStyle};
 use rayon::prelude::*;
 
 use crate::hittable::{HitRecord, Hittable};
@@ -104,9 +105,10 @@ impl Camera {
     }
 
     pub fn render(&self, world: &HittableList) {
+        let style = ProgressStyle::with_template("{spinner:.green} [{elapsed_precise}] [{wide_bar:.cyan/blue}]) {pos}/{len} Scanlines ({eta})").unwrap().progress_chars("#>-");
         println!("P3\n{} {}\n255", self.image_width, self.image_height);
-        for j in 0..self.image_height {
-            eprint!("\rScanlines remaining: {}", self.image_height - j);
+        for j in (0..self.image_height).progress_with_style(style) {
+            // eprint!("\rScanlines remaining: {}", self.image_height - j);
             io::stdout().flush().unwrap();
             let pixels: Vec<Vec3> = (0..self.image_width)
                 .into_par_iter()
