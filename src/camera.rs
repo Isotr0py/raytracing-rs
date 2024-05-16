@@ -2,6 +2,7 @@ use std::f64::INFINITY;
 use std::io::{self, Write};
 
 use derive_builder::Builder;
+use rayon::prelude::*;
 
 use crate::hittable::{HitRecord, Hittable};
 use crate::hittable_list::HittableList;
@@ -107,16 +108,27 @@ impl Camera {
         for j in 0..self.image_height {
             eprint!("\rScanlines remaining: {}", self.image_height - j);
             io::stdout().flush().unwrap();
-            for i in 0..self.image_width {
-                let mut pixel_color = Vec3::zeros();
-                for _sample in 0..self.samples_per_pixel {
-                    let ray = self.get_ray(i as f64, j as f64);
-                    pixel_color += self.ray_color(&ray, self.max_depth, world);
-                }
-                write_color(self.pixel_sample_scale * pixel_color);
+            let pixels: Vec<Vec3> = (0..self.image_width)
+                .into_par_iter()
+                .map(|i| {
+                    let pixel_color = self.get_pixel_color(i as f64, j as f64, world);
+                    self.pixel_sample_scale * pixel_color
+                })
+                .collect();
+            for pixel in pixels {
+                write_color(pixel);
             }
         }
         eprintln!("\nDone.");
+    }
+
+    pub fn get_pixel_color(&self, i: f64, j: f64, world: &HittableList) -> Vec3 {
+        let mut pixel_color = Vec3::zeros();
+        for _sample in 0..self.samples_per_pixel {
+            let ray = self.get_ray(i, j);
+            pixel_color += self.ray_color(&ray, self.max_depth, world);
+        }
+        pixel_color
     }
 
     fn ray_color(&self, r: &Ray, depth: usize, world: &HittableList) -> Vec3 {

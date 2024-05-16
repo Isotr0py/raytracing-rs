@@ -16,9 +16,9 @@ mod vector;
 
 fn main() {
     // Image
-    let image_width: usize = 600;
-    let image_height: usize = 400;
-    let samples_per_pixel: usize = 10;
+    let image_width: usize = 1280;
+    let image_height: usize = 720;
+    let samples_per_pixel: usize = 100;
     let max_depth: usize = 50;
     let vfov: f64 = 20.0;
     let defocus_angle = 10.0;
